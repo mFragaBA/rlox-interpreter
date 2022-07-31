@@ -1,0 +1,5 @@
+// Adds string scanning "asd"
+// this is a comment
+(( )){} // grouping stuff
+!*+-/=<> <= == // operators
+"asd"

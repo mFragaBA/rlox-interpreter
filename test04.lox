@@ -1,0 +1,16 @@
+// Adds string scanning "asd"
+// this is a comment
+(( )){} // grouping stuff
+!*+-/=<> <= == // operators
+"asd"
+
+12345;
+123
+123.2
+123.2;
+123.42
+124.42;
+123.456
+//123.345
+
+var pepe = 2;
