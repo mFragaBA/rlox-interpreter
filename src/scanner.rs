@@ -44,6 +44,15 @@ impl<'a> Scanner<'a> {
         self.peek_first_char().is_none()
     }
 
+
+    fn peek_and_add_token(&mut self, expecting: char, matched: TokenType, not_matched: TokenType) {
+        if self.match_next_char(expecting) {
+            self.add_token(self.at-1, matched, None);
+        } else {
+            self.add_token(self.at-1, not_matched, None);
+        }
+    }
+
     fn scan_token(&mut self) {
         let c = self.advance(); 
         match c {
@@ -59,36 +68,10 @@ impl<'a> Scanner<'a> {
             '*' => self.add_token(self.at-1, TokenType::STAR, None),
 
             // Operators
-            '!' => {
-                if self.match_next_char('=') {
-                    self.add_token(self.at-1, TokenType::BANG_EQUAL, None);
-                } else {
-                    self.add_token(self.at-1, TokenType::BANG, None);
-                }
-            }
-            '=' => {
-                if self.match_next_char('=') {
-                    self.add_token(self.at-1, TokenType::EQUAL_EQUAL, None);
-                } else {
-                    self.add_token(self.at-1, TokenType::EQUAL, None);
-                }
-
-            }
-            '<' => {
-                if self.match_next_char('=') {
-                    self.add_token(self.at-1, TokenType::LESS_EQUAL, None);
-                } else {
-                    self.add_token(self.at-1, TokenType::LESS, None);
-                }
-            }
-            '>' => {
-                if self.match_next_char('=') {
-                    self.add_token(self.at-1, TokenType::GREATER_EQUAL, None);
-                } else {
-                    self.add_token(self.at-1, TokenType::GREATER, None);
-                };
-
-            }
+            '!' => self.peek_and_add_token('=', TokenType::BANG_EQUAL, TokenType::BANG),
+            '=' => self.peek_and_add_token('=', TokenType::EQUAL_EQUAL, TokenType::EQUAL),
+            '<' => self.peek_and_add_token('=', TokenType::LESS_EQUAL, TokenType::LESS),
+            '>' => self.peek_and_add_token('=', TokenType::GREATER_EQUAL, TokenType::GREATER), 
 
             // slash is a special case because of comments
             '/' => {
