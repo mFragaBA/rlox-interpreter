@@ -1,0 +1,29 @@
+// Adds string scanning "asd"
+// this is a comment
+(( )){} // grouping stuff
+!*+-/=<> <= == // operators
+"asd"
+
+/*
+
+Can we add multiline comments?
+
+*/
+
+/* Can we also add multiline that only take a single line? */
+
+12345;
+123
+123.2
+123.2;
+123.42
+124.42;
+123.456
+//123.345
+
+/* 
+  /* Can we nest block comments? */
+  /* Yes, we can */
+*/
+
+var pepe = 2;

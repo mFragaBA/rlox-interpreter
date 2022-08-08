@@ -90,6 +90,33 @@ impl<'a> Scanner<'a> {
                             None => break,
                         }
                     }
+                } else if self.match_next_char('*') {
+                    // A multiline comment goes until it finds a closing `*/`.
+                    self.start += 2;
+                    let mut depth = 1;
+                    while depth > 0 {
+                        self.start += 1;
+                        self.at += 1;
+                        match self.next_char() {
+                            Some('\n') => {
+                                self.line += 1;
+                            }
+                            Some('*') => { 
+                                if self.match_next_char('/') {
+                                    self.start += 1;
+                                    depth -= 1;
+                                }
+                            }
+                            Some('/') => {
+                                if self.match_next_char('*') {
+                                    self.start += 1;
+                                    depth += 1;
+                                }
+                            }
+                            Some(_) => { }
+                            None => errors::error(self.line, String::from("Unterminated multiline comment")),
+                        }
+                    }
                 } else {
                     self.add_token(self.at-1, TokenType::SLASH, None);
                 }
