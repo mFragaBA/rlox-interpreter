@@ -2,12 +2,12 @@ use core::fmt;
 
 use super::TokenType;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Token<'a> {
-    kind: TokenType,
-    lexeme: &'a str,
-    literal: Option<&'a str>, 
-    line: usize,
+    pub kind: TokenType,
+    pub lexeme: &'a str,
+    pub literal: Option<&'a str>, 
+    pub line: usize,
 }
 
 impl<'a> Token<'a> {

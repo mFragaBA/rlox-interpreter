@@ -10,6 +10,7 @@ pub use token_type::*;
 mod errors;
 pub use errors::*;
 mod scanner;
+mod expr;
 
 type LoxResult = Result<(), Box<dyn std::error::Error>>;
 
