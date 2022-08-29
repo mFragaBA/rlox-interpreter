@@ -50,6 +50,26 @@ impl<'a> ExprVisitor<'a, String> for ASTPrinter {
     }
 }
 
+struct RPNPrinter;
+impl <'a> ExprVisitor<'a, String> for RPNPrinter {
+    fn visit(&mut self, expr: &Expr<'a>) -> String {
+        match expr {
+            Expr::Binary(ref left, ref operator, ref right) => {
+                format!("{} {} {}", self.visit(left), self.visit(right), operator.lexeme)
+            }
+            Expr::Grouping(ref expr) => {
+                format!("{}", self.visit(expr))
+            }
+            Expr::Literal(ref value) => {
+                format!("{}", value)
+            }
+            Expr::Unary(ref operator, ref expr) => {
+                format!("{}({})", operator.lexeme, self.visit(expr))
+            }
+        }
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -110,5 +130,31 @@ mod test {
         let mut visitor = ASTPrinter{};
 
         assert_eq!(visitor.visit(&expression), "(* (- 123) (group 45.67))");
+    }
+
+    #[test]
+    fn test_book_example_rpn() {
+        // expression is (1 + 2) * (4 - 3)
+        let expression = Box::new(Expr::Binary(
+            Box::new(Expr::Grouping(
+                Box::new(Expr::Binary(
+                    Box::new(Expr::Literal(String::from("1"))), 
+                    Token::new(crate::TokenType::PLUS, "+", None, 0), 
+                    Box::new(Expr::Literal(String::from("2"))), 
+                ))
+            )),
+            Token::new(crate::TokenType::STAR, "*", None, 0), 
+            Box::new(Expr::Grouping(
+                Box::new(Expr::Binary(
+                    Box::new(Expr::Literal(String::from("4"))), 
+                    Token::new(crate::TokenType::MINUS, "-", None, 0), 
+                    Box::new(Expr::Literal(String::from("3"))), 
+                ))
+            )),
+        ));
+
+        let mut visitor = RPNPrinter{};
+
+        assert_eq!(visitor.visit(&expression), "1 2 + 4 3 - *");
     }
 }
