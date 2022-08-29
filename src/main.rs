@@ -11,6 +11,7 @@ mod errors;
 pub use errors::*;
 mod scanner;
 mod expr;
+mod parser;
 
 type LoxResult = Result<(), Box<dyn std::error::Error>>;
 
